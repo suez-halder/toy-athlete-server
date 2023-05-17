@@ -27,7 +27,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const toyCollection = client.db("toyDB").collection("toys");
+    const toyCollection = client.db("toysDB").collection("toys");
 
     
     
