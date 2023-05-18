@@ -1,6 +1,6 @@
 const express = require('express')
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 3000;
@@ -29,12 +29,23 @@ async function run() {
 
     const toyCollection = client.db("toysDB").collection("toys");
 
-    app.get('/allToys', async(req, res)=>{
-      const result = await toyCollection.find().toArray();
+    app.get('/allToys', async (req, res) => {
+      let query = {};
+        if(req.query?.email){
+            query = { email: req.query.email } 
+        }
+        const result = await toyCollection.find(query).toArray();
+        res.send(result);
+    })
+
+    app.get('/toy/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await toyCollection.findOne(query);
       res.send(result)
     })
 
-    app.post('/addToy', async(req, res)=>{
+    app.post('/addToy', async (req, res) => {
       const newToy = req.body;
       const result = await toyCollection.insertOne(newToy);
       res.send(result)
