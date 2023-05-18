@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require('mongodb');
-require('dotenv').config() 
+require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -29,15 +29,19 @@ async function run() {
 
     const toyCollection = client.db("toysDB").collection("toys");
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
+    app.post('/addToy', async(req, res)=>{
+      const newToy = req.body;
+      const result = await toyCollection.insertOne(newToy);
+      res.send(result)
+    })
+
+
+
+
+
+
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
@@ -52,10 +56,10 @@ run().catch(console.dir);
 
 
 
-app.get('/', (req, res)=>{
-    res.send('What a wonderful world!');
+app.get('/', (req, res) => {
+  res.send('What a wonderful world!');
 })
 
-app.listen(port, ()=>{
-    console.log(`Toy Management Server is running on port: ${port}`);
+app.listen(port, () => {
+  console.log(`Toy Management Server is running on port: ${port}`);
 })
