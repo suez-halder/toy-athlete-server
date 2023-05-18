@@ -51,6 +51,24 @@ async function run() {
       res.send(result)
     })
 
+    app.put('/editToy/:id', async(req, res)=>{
+      const id = req.params.id;
+      const filter = {_id: new ObjectId(id)};
+      const options = {upsert: true};
+      const updatedToy = req.body;
+      const toy ={
+          $set: {
+              price: updatedToy.price,
+              quantity: updatedToy.quantity,
+              description: updatedToy.description
+          }
+      }
+      // console.log(toy);
+      const result = await toyCollection.updateOne(filter, toy, options);
+      res.send(result)
+      // console.log(result);
+  })
+
     app.delete('/toy/:id', async(req,res)=>{
       const id = req.params.id;
       const query = {_id: new ObjectId(id)};
