@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    client.connect();
 
     const toyCollection = client.db("toysDB").collection("toys");
 
@@ -67,7 +67,7 @@ async function run() {
         res.send(result);
       }
     });
-    
+
 
     app.get('/toy/:id', async (req, res) => {
       const id = req.params.id;
@@ -94,11 +94,19 @@ async function run() {
           description: updatedToy.description
         }
       }
-      // console.log(toy);
-      const result = await toyCollection.updateOne(filter, toy, options);
-      res.send(result)
-      // console.log(result);
-    })
+
+      res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from any origin (replace '*' with the specific origin if needed)
+      res.setHeader('Access-Control-Allow-Methods', 'PUT'); // Allow the PUT method
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow the 'Content-Type' header
+
+      try {
+        const result = await toyCollection.updateOne(filter, toy, options);
+        res.send(result);
+      } catch (error) {
+        res.status(500).send({ error: 'An error occurred while updating the toy.' });
+      }
+    });
+
 
     app.delete('/toy/:id', async (req, res) => {
       const id = req.params.id;
