@@ -45,6 +45,14 @@ async function run() {
         }
     })
 
+    app.get('/allToys/:text', async(req, res)=>{
+      const text = req.params.text;
+      const query = {toyName : text};
+      const result =await toyCollection.find(query).toArray();
+      res.send(result);
+
+    })
+
     app.get('/toy/:id', async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
