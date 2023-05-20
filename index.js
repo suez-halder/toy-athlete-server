@@ -11,6 +11,7 @@ app.use(express.json());
 
 
 
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.pufeqid.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -83,6 +84,14 @@ async function run() {
     })
 
     app.put('/editToy/:id', async (req, res) => {
+      res.setHeader('Access-Control-Allow-Origin', '*') // Allow requests from any origin (replace '*' with the specific origin if needed)
+      res.setHeader('Access-Control-Allow-Methods', 'PUT'); // Allow the PUT method
+      res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow the 'Content-Type' header
+      res.setHeader(
+        'Access-Control-Allow-Headers',
+        'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version'
+      )
+
       const id = req.params.id;
       const filter = { _id: new ObjectId(id) };
       const options = { upsert: true };
@@ -95,11 +104,8 @@ async function run() {
         }
       }
 
-      res.setHeader('Access-Control-Allow-Origin', '*'); // Allow requests from any origin (replace '*' with the specific origin if needed)
-      res.setHeader('Access-Control-Allow-Methods', 'PUT'); // Allow the PUT method
-      res.setHeader('Access-Control-Allow-Headers', 'Content-Type'); // Allow the 'Content-Type' header
-
       try {
+        console.log(toy);
         const result = await toyCollection.updateOne(filter, toy, options);
         res.send(result);
       } catch (error) {
