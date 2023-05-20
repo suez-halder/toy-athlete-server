@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors');
+const jwt = require('jsonwebtoken');
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
@@ -23,12 +24,27 @@ const client = new MongoClient(uri, {
   }
 });
 
+
+
+
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     client.connect();
 
     const toyCollection = client.db("toysDB").collection("toys");
+
+    // jwt
+    app.post('/jwt', (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '1hr' });
+      // console.log(token);
+      res.send(token);
+    })
+
+
+
+
 
     app.get('/allToys', async (req, res) => {
       const limit = parseInt(req.query.limit) || 20;
